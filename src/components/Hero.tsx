@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import { useRef } from 'react';
-import { animate, createTimeline, splitText, stagger, utils } from 'animejs';
-import { useAnime } from '@/lib/motion';
+import { animate, createAnimatable, createTimeline, splitText, stagger, utils } from 'animejs';
+import { finePointer, magnetic, useAnime } from '@/lib/motion';
 import { SITE } from '@/lib/site';
 import { ArrowUpRightIcon, GitHubIcon, LinkedInIcon } from './icons';
 
@@ -28,7 +28,33 @@ export function Hero() {
     animate('[data-pulse]', { scale: [1, 2.4], opacity: [0.6, 0], duration: 1800, ease: 'outQuad', loop: true });
     animate('[data-scroll-dot]', { y: [0, 10], opacity: [1, 0], duration: 1600, ease: 'inOutQuad', loop: true });
 
-    return () => split.revert();
+    // Buttons pull toward the cursor.
+    const undoMagnetic = magnetic(root);
+
+    // Portrait layers drift with the mouse for depth.
+    let undoParallax = () => {};
+    if (finePointer()) {
+      const layers = [...root.querySelectorAll<HTMLElement>('[data-depth]')].map((el) => ({
+        depth: Number(el.dataset.depth),
+        anim: createAnimatable(el, { x: 1200, y: 1200, ease: 'out(4)' }),
+      }));
+      const onMove = (e: PointerEvent) => {
+        const dx = e.clientX / window.innerWidth - 0.5;
+        const dy = e.clientY / window.innerHeight - 0.5;
+        layers.forEach(({ depth, anim }) => {
+          anim.x(dx * depth);
+          anim.y(dy * depth);
+        });
+      };
+      window.addEventListener('pointermove', onMove);
+      undoParallax = () => window.removeEventListener('pointermove', onMove);
+    }
+
+    return () => {
+      split.revert();
+      undoMagnetic();
+      undoParallax();
+    };
   });
 
   return (
@@ -62,18 +88,18 @@ export function Hero() {
             </p>
 
             <div data-reveal data-hero="text" className="mt-9 flex flex-wrap items-center gap-3">
-              <a href="#projects" className="btn-primary">
+              <a href="#projects" data-magnetic className="btn-primary">
                 View my work
                 <ArrowUpRightIcon width={16} height={16} />
               </a>
-              <a href="#contact" className="btn-ghost">
+              <a href="#contact" data-magnetic className="btn-ghost">
                 Contact me
               </a>
               <span className="mx-2 hidden h-6 w-px bg-white/10 sm:block" />
-              <a href={SITE.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="icon-btn">
+              <a href={SITE.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" data-magnetic className="icon-btn">
                 <GitHubIcon />
               </a>
-              <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="icon-btn">
+              <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-magnetic className="icon-btn">
                 <LinkedInIcon />
               </a>
             </div>
@@ -81,12 +107,16 @@ export function Hero() {
 
           <div className="flex justify-center md:col-span-5 md:justify-end">
             <div data-reveal data-hero="photo" className="relative h-64 w-64 sm:h-80 sm:w-80">
-              <div data-halo className="absolute -inset-12 rounded-full bg-violet-600/20 blur-3xl" />
-              <div data-orbit className="absolute -inset-7 rounded-full border border-white/[0.07]">
+              <div data-depth="-30" className="absolute -inset-12">
+                <div data-halo className="h-full w-full rounded-full bg-violet-600/20 blur-3xl" />
+              </div>
+              <div data-depth="40" className="absolute -inset-7">
+              <div data-orbit className="h-full w-full rounded-full border border-white/[0.07]">
                 <span className="absolute -right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-cyan-200 shadow-[0_0_12px_3px_rgba(165,243,252,0.5)]" />
                 <span className="absolute -left-[3px] top-1/3 h-1.5 w-1.5 rounded-full bg-violet-200 shadow-[0_0_10px_2px_rgba(196,181,253,0.5)]" />
               </div>
-              <div className="relative h-full w-full rounded-full border border-white/15 p-1.5">
+              </div>
+              <div data-depth="18" className="relative h-full w-full rounded-full border border-white/15 p-1.5">
                 <Image
                   src="/images/aparnaj.jpg"
                   alt="Portrait of Aparna J"
