@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { animate } from 'animejs';
-import { motionEnabled, revealGroups, useAnime } from '@/lib/motion';
+import { magnetic, motionEnabled, revealGroups, revealHeadings, useAnime } from '@/lib/motion';
 import { SITE } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
 import { ArrowUpRightIcon, CheckIcon, GitHubIcon, LinkedInIcon, MailIcon, SendIcon } from './icons';
@@ -33,7 +33,15 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
   const sendIconRef = useRef<HTMLSpanElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
-  useAnime(ref, revealGroups);
+  useAnime(ref, (ctx) => {
+    revealGroups(ctx);
+    const undoMagnetic = magnetic(ctx.root, 0.2);
+    const undoHeadings = revealHeadings(ctx);
+    return () => {
+      undoMagnetic();
+      undoHeadings();
+    };
+  });
 
   // Paper plane drifts while sending.
   useEffect(() => {
@@ -60,7 +68,12 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
   const isLoading = formStatus === 'loading';
 
   return (
-    <section ref={ref} id="contact" className="relative px-6 py-28 md:py-36">
+    <section
+      ref={ref}
+      id="contact"
+      className="relative px-6 py-28 md:py-36 section"
+      style={{ '--accent': '110 231 183' } as React.CSSProperties}
+    >
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           index="05"
@@ -169,7 +182,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                   )}
                 </div>
 
-                <button type="submit" disabled={isLoading} className="btn-primary">
+                <button type="submit" disabled={isLoading} data-magnetic className="btn-primary">
                   {isLoading ? 'Sending...' : 'Send Message'}
                   <span ref={sendIconRef} className="inline-flex">
                     <SendIcon width={16} height={16} />
