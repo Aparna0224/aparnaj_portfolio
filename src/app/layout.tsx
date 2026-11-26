@@ -1,6 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import './App.css';
+
+const sans = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
+
+// Hide animated elements before first paint, unless the visitor prefers reduced motion.
+const motionScript = `if(window.matchMedia&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion')`;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://aparnaj.dev'),
@@ -37,12 +43,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
+  themeColor: '#03040d',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
+      </head>
       <body>{children}</body>
     </html>
   );
