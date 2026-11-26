@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { animate, stagger } from 'animejs';
-import { revealGroups, useAnime } from '@/lib/motion';
+import { drawIcons, revealGroups, revealHeadings, useAnime } from '@/lib/motion';
 import { EDUCATION, STATS } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
 import { CapIcon } from './icons';
@@ -23,6 +23,8 @@ export function About({ skills }: AboutProps) {
 
   useAnime(ref, (ctx) => {
     revealGroups(ctx);
+    drawIcons(ctx);
+    const undoHeadings = revealHeadings(ctx);
 
     ctx.root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
       const decimals = Number(el.dataset.decimals ?? 0);
@@ -53,10 +55,17 @@ export function About({ skills }: AboutProps) {
       });
       ctx.inView(chips, () => anim.play());
     }
+
+    return undoHeadings;
   });
 
   return (
-    <section ref={ref} id="about" className="relative px-6 py-28 md:py-36">
+    <section
+      ref={ref}
+      id="about"
+      className="relative px-6 py-28 md:py-36 section"
+      style={{ '--accent': '167 139 250' } as React.CSSProperties}
+    >
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading index="01" label="About">
           Building backend systems that make <span className="text-gradient">AI useful</span>
@@ -91,7 +100,7 @@ export function About({ skills }: AboutProps) {
             </dl>
 
             <div data-reveal className="flex gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
-              <span className="icon-btn flex-shrink-0">
+              <span data-draw className="icon-btn flex-shrink-0 text-violet-200">
                 <CapIcon />
               </span>
               <div className="min-w-0">
