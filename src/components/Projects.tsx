@@ -2,15 +2,9 @@
 
 import { useRef } from 'react';
 import { revealGroups, useAnime } from '@/lib/motion';
+import type { Project } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
-
-interface Project {
-  title: string;
-  tech: string[];
-  description: string;
-  year: string;
-  link: string;
-}
+import { ArrowUpRightIcon, GitHubIcon } from './icons';
 
 interface ProjectsProps {
   projects: Project[];
@@ -27,60 +21,67 @@ export function Projects({ projects }: ProjectsProps) {
   useAnime(ref, revealGroups);
 
   return (
-    <section ref={ref} id="projects" className="relative flex min-h-screen items-center px-6 py-28">
+    <section ref={ref} id="projects" className="relative px-6 py-28 md:py-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
-          index="02"
+          index="03"
           label="Work"
-          description="A few missions I've launched — from flood prediction to AI-powered hiring tools."
+          description="Projects spanning agentic AI, backend APIs, machine learning and data engineering."
         >
-          Featured <span className="text-gradient">missions</span>
+          Selected <span className="text-gradient">work</span>
         </SectionHeading>
 
-        <div data-reveal-group className="grid gap-6">
+        <div data-reveal-group className="grid gap-5">
           {projects.map((project, index) => (
             <article
               key={project.title}
               data-reveal
               onPointerMove={trackSpotlight}
-              className="group glass relative overflow-hidden rounded-3xl p-8 transition-colors duration-500 hover:border-violet-300/30 md:p-10"
+              className="group glass relative overflow-hidden rounded-2xl transition-colors duration-500 hover:border-white/15"
             >
               <div className="spotlight pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-              <div className="relative space-y-5">
-                <div className="flex items-center gap-4 font-mono text-xs uppercase tracking-widest">
-                  <span className="text-cyan-300">Mission {String(index + 1).padStart(2, '0')}</span>
-                  <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
-                  <span className="text-slate-500">{project.year}</span>
+              <div className="relative grid gap-6 p-7 md:grid-cols-12 md:gap-10 md:p-9">
+                <div className="flex items-baseline gap-4 font-mono text-xs text-slate-500 md:col-span-2 md:flex-col md:gap-2">
+                  <span className="text-violet-300">{String(index + 1).padStart(2, '0')}</span>
+                  {project.year && <span>{project.year}</span>}
                 </div>
 
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="font-display text-2xl font-semibold text-white transition-colors duration-300 group-hover:text-violet-100 md:text-3xl">
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="after:absolute after:inset-0 after:content-['']"
+                <div className="md:col-span-10">
+                  <div className="flex items-start justify-between gap-6">
+                    <h3 className="font-display text-xl font-semibold text-white sm:text-2xl">
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="after:absolute after:inset-0 after:content-['']"
+                      >
+                        {project.title}
+                      </a>
+                    </h3>
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 flex-shrink-0 text-slate-500 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white"
                     >
-                      {project.title}
-                    </a>
-                  </h3>
-                  <span
-                    aria-hidden="true"
-                    className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-white/10 text-slate-400 transition-all duration-500 group-hover:rotate-[-45deg] group-hover:border-violet-300/50 group-hover:text-white"
-                  >
-                    →
-                  </span>
-                </div>
-
-                <p className="max-w-3xl leading-relaxed text-slate-400">{project.description}</p>
-
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {project.tech.map((tech) => (
-                    <span key={tech} className="chip">
-                      {tech}
+                      <ArrowUpRightIcon width={20} height={20} />
                     </span>
-                  ))}
+                  </div>
+
+                  <p className="mt-3 max-w-3xl leading-relaxed text-slate-400">{project.description}</p>
+
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                    <ul className="flex flex-wrap gap-2" aria-label="Technologies">
+                      {project.tech.map((tech) => (
+                        <li key={tech} className="chip">
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                    <span className="inline-flex items-center gap-2 text-xs text-slate-500 transition-colors duration-300 group-hover:text-slate-300">
+                      <GitHubIcon width={14} height={14} />
+                      View source
+                    </span>
+                  </div>
                 </div>
               </div>
             </article>
