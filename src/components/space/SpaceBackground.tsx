@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { animate, utils } from 'animejs';
-import { motionEnabled, useAnime } from '@/lib/motion';
+import { animate, createAnimatable, utils } from 'animejs';
+import { finePointer, motionEnabled, useAnime } from '@/lib/motion';
 import { Starfield } from './Starfield';
 
 /** Fixed galaxy backdrop: nebula clouds, starfield and occasional shooting stars. */
@@ -22,6 +22,22 @@ export function SpaceBackground() {
       loop: true,
       alternate: true,
     });
+
+    // Soft light that trails the cursor.
+    if (!finePointer()) return;
+    const glow = createAnimatable('[data-cursor-glow]', { x: 900, y: 900, opacity: 600, ease: 'out(3)' });
+    const onMove = (e: PointerEvent) => {
+      glow.x(e.clientX - 250);
+      glow.y(e.clientY - 250);
+      glow.opacity(1);
+    };
+    const onLeave = () => glow.opacity(0);
+    window.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerleave', onLeave);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerleave', onLeave);
+    };
   });
 
   // Shooting stars at random intervals.
@@ -68,6 +84,10 @@ export function SpaceBackground() {
       <div data-nebula className="absolute right-[-15%] top-[30%] h-[34rem] w-[34rem] rounded-full bg-indigo-600/[0.10] blur-[140px]" />
       <div data-nebula className="absolute bottom-[-20%] left-[20%] h-[36rem] w-[36rem] rounded-full bg-cyan-700/[0.08] blur-[150px]" />
       <Starfield />
+      <div
+        data-cursor-glow
+        className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.10),transparent_65%)] opacity-0"
+      />
       <div ref={meteorLayer} className="absolute inset-0" />
     </div>
   );
