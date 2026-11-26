@@ -3,8 +3,9 @@
 import { useRef } from 'react';
 import { animate, stagger } from 'animejs';
 import { revealGroups, useAnime } from '@/lib/motion';
+import { EDUCATION, STATS } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
-import { Planet } from './space/Planet';
+import { CapIcon } from './icons';
 
 interface SkillGroup {
   category: string;
@@ -15,11 +16,7 @@ interface AboutProps {
   skills: SkillGroup[];
 }
 
-const STATS = [
-  { value: 5, label: 'Projects' },
-  { value: 10, label: 'Technologies' },
-  { value: 2, label: 'Years' },
-];
+const formatStat = (value: number, decimals = 0, suffix = '') => `${value.toFixed(decimals)}${suffix}`;
 
 export function About({ skills }: AboutProps) {
   const ref = useRef<HTMLElement>(null);
@@ -27,96 +24,101 @@ export function About({ skills }: AboutProps) {
   useAnime(ref, (ctx) => {
     revealGroups(ctx);
 
-    // Count the stats up from zero.
     ctx.root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-      const target = Number(el.dataset.count);
+      const decimals = Number(el.dataset.decimals ?? 0);
+      const suffix = el.dataset.suffix ?? '';
       const counter = { value: 0 };
-      el.textContent = '0+';
+      el.textContent = formatStat(0, decimals, suffix);
       const anim = animate(counter, {
-        value: target,
+        value: Number(el.dataset.count),
         duration: 1800,
         ease: 'outExpo',
         autoplay: false,
         onUpdate: () => {
-          el.textContent = `${Math.round(counter.value)}+`;
+          el.textContent = formatStat(counter.value, decimals, suffix);
         },
       });
       ctx.inView(el, () => anim.play());
     });
 
-    // Skill chips pop in like stars lighting up.
-    ctx.root.querySelectorAll('[data-skill-group]').forEach((group) => {
-      const anim = animate(group.querySelectorAll('[data-chip]'), {
+    const chips = ctx.root.querySelector('[data-skills]');
+    if (chips) {
+      const anim = animate(chips.querySelectorAll('[data-chip]'), {
         opacity: [0, 1],
-        scale: [0.4, 1],
-        duration: 700,
-        delay: stagger(45, { start: 250 }),
-        ease: 'outBack(1.7)',
+        y: [8, 0],
+        duration: 600,
+        delay: stagger(25, { start: 300 }),
+        ease: 'outQuad',
         autoplay: false,
       });
-      ctx.inView(group, () => anim.play());
-    });
+      ctx.inView(chips, () => anim.play());
+    }
   });
 
   return (
-    <section ref={ref} id="about" className="relative flex min-h-screen items-center px-6 py-28">
-      <Planet className="right-[6%] top-16 hidden h-28 w-28 lg:block" />
-
+    <section ref={ref} id="about" className="relative px-6 py-28 md:py-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading index="01" label="About">
-          Exploring the <span className="text-gradient">universe of AI</span>
+          Building backend systems that make <span className="text-gradient">AI useful</span>
         </SectionHeading>
 
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div data-reveal-group className="space-y-6">
-            <p data-reveal className="text-lg leading-relaxed text-slate-300">
-              My fascination with artificial intelligence began with a simple question: how can we make machines learn
-              and adapt? This curiosity led me down a path of exploring neural networks, training models, and building
-              intelligent systems.
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div data-reveal-group className="space-y-5 lg:col-span-6">
+            <p data-reveal className="text-base leading-relaxed text-slate-300 sm:text-lg">
+              I&apos;m a final-year B.Tech student in Artificial Intelligence and Data Science with strong backend and
+              Python experience. I build REST APIs, FastAPI applications, cloud-based solutions and AI-powered systems
+              that bring multiple services together.
             </p>
-            <p data-reveal className="text-lg leading-relaxed text-slate-300">
-              I specialize in developing machine learning solutions using Python, PyTorch, and TensorFlow. My work
-              spans from computer vision projects to natural language processing applications. Beyond ML, I have strong
-              backend development skills and enjoy creating full-stack applications with React.
-            </p>
-            <p data-reveal className="text-lg leading-relaxed text-slate-300">
-              When I&apos;m not training models or debugging code, I&apos;m probably exploring new research papers or
-              experimenting with emerging AI technologies.
+            <p data-reveal className="text-base leading-relaxed text-slate-400 sm:text-lg">
+              I work with Docker, PostgreSQL, AWS and Azure, and I&apos;m most interested in scalable backend systems,
+              enterprise integrations and automation, from AI pricing engines to agentic RAG pipelines.
             </p>
 
-            <div data-reveal className="grid grid-cols-3 gap-4 pt-4">
+            <dl data-reveal className="grid grid-cols-3 divide-x divide-white/[0.08] rounded-2xl border border-white/[0.08] bg-white/[0.02]">
               {STATS.map((stat) => (
-                <div key={stat.label} className="glass rounded-2xl p-5 text-center">
-                  <div data-count={stat.value} className="font-display text-3xl font-semibold text-gradient">
-                    {stat.value}+
-                  </div>
-                  <div className="mt-1 text-xs uppercase tracking-widest text-slate-500">{stat.label}</div>
+                <div key={stat.label} className="px-4 py-5 sm:px-6">
+                  <dt className="text-xs text-slate-500">{stat.label}</dt>
+                  <dd
+                    data-count={stat.value}
+                    data-decimals={stat.decimals}
+                    data-suffix={stat.suffix}
+                    className="mt-1 font-display text-3xl font-semibold text-white"
+                  >
+                    {formatStat(stat.value, stat.decimals, stat.suffix)}
+                  </dd>
                 </div>
               ))}
+            </dl>
+
+            <div data-reveal className="flex gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
+              <span className="icon-btn flex-shrink-0">
+                <CapIcon />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white">{EDUCATION.school}</p>
+                <p className="mt-0.5 text-sm text-slate-400">{EDUCATION.degree}</p>
+                <p className="mt-2 font-mono text-xs text-slate-500">
+                  {EDUCATION.period} · {EDUCATION.grade}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div data-reveal-group className="space-y-5">
-            {skills.map((group) => (
-              <div
-                key={group.category}
-                data-reveal
-                data-skill-group
-                className="glass rounded-2xl p-6 transition-colors duration-300 hover:border-violet-300/30"
-              >
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-violet-200">
-                  <span className="text-cyan-300">✦</span>
-                  {group.category}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {group.items.map((skill) => (
-                    <span key={skill} data-chip className="chip">
-                      {skill}
-                    </span>
-                  ))}
+          <div data-reveal-group className="lg:col-span-6">
+            <div data-reveal data-skills className="glass divide-y divide-white/[0.06] rounded-2xl">
+              {skills.map((group) => (
+                <div key={group.category} className="grid gap-3 px-6 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                  <h3 className="pt-1 text-sm font-medium text-white">{group.category}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {group.items.map((skill) => (
+                      <span key={skill} data-chip className="chip">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
