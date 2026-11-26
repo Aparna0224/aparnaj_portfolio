@@ -42,31 +42,35 @@ body {
 
 @layer components {
   .glass {
-    @apply border border-white/10 bg-white/[0.03] backdrop-blur-md;
+    @apply border border-white/[0.08] bg-white/[0.025] backdrop-blur-md;
+  }
+
+  .icon-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-slate-400 transition-colors duration-300 hover:border-white/30 hover:text-white;
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-violet-200 via-indigo-200 to-cyan-200 bg-clip-text text-transparent;
   }
 
   .eyebrow {
-    @apply font-mono text-xs uppercase tracking-[0.3em] text-cyan-300/80;
+    @apply font-mono text-xs uppercase tracking-[0.25em] text-slate-400;
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-3 text-sm font-medium text-white shadow-[0_0_30px_-6px_rgba(167,139,250,0.7)] transition-[box-shadow,filter] duration-300 hover:shadow-[0_0_44px_-4px_rgba(217,70,239,0.8)] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-space-950 shadow-[0_0_40px_-12px_rgba(196,181,253,0.8)] transition-colors duration-300 hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3 text-sm font-medium text-slate-200 transition-colors duration-300 hover:border-cyan-300/60 hover:bg-white/5 hover:text-cyan-100;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-slate-200 transition-colors duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white;
   }
 
   .chip {
-    @apply rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300 transition-colors duration-300 hover:border-violet-300/50 hover:text-violet-100;
+    @apply rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-slate-300;
   }
 
   .field {
-    @apply w-full border-b border-white/10 bg-transparent px-0 py-3 text-white placeholder-slate-600 transition-colors duration-300 focus:border-violet-400 focus:outline-none disabled:opacity-60;
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white placeholder-slate-600 transition-colors duration-300 focus:border-violet-300/60 focus:bg-white/[0.04] focus:outline-none disabled:opacity-60;
   }
 }
 
@@ -75,6 +79,10 @@ body {
 .motion [data-reveal],
 .motion [data-chip] {
   opacity: 0;
+}
+
+.motion [data-timeline-line] {
+  transform: scaleY(0);
 }
 
 /* Split characters need a box so transforms apply. */
@@ -86,7 +94,7 @@ body {
 .spotlight {
   background: radial-gradient(
     420px circle at var(--x, 50%) var(--y, 50%),
-    rgba(167, 139, 250, 0.12),
+    rgba(167, 139, 250, 0.08),
     transparent 60%
   );
 }

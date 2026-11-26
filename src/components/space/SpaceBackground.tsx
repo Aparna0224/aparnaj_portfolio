@@ -38,7 +38,7 @@ export function SpaceBackground() {
       wrap.style.transform = `rotate(${utils.random(145, 160)}deg)`;
 
       const trail = document.createElement('div');
-      trail.className = 'h-px w-32 rounded-full bg-gradient-to-r from-white via-cyan-200/70 to-transparent';
+      trail.className = 'h-px w-24 rounded-full bg-gradient-to-r from-white/80 via-cyan-200/40 to-transparent';
       wrap.appendChild(trail);
       layer.appendChild(wrap);
 
@@ -51,10 +51,10 @@ export function SpaceBackground() {
         onComplete: () => wrap.remove(),
       });
 
-      timeout = setTimeout(launch, utils.random(2500, 7000));
+      timeout = setTimeout(launch, utils.random(7000, 14000));
     };
 
-    timeout = setTimeout(launch, 1800);
+    timeout = setTimeout(launch, 4000);
     return () => {
       clearTimeout(timeout);
       layer.replaceChildren();
@@ -63,10 +63,10 @@ export function SpaceBackground() {
 
   return (
     <div ref={rootRef} className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#0e1233_0%,#03040d_60%)]" />
-      <div data-nebula className="absolute -left-40 top-[-10%] h-[38rem] w-[38rem] rounded-full bg-violet-700/25 blur-[120px]" />
-      <div data-nebula className="absolute right-[-15%] top-[30%] h-[34rem] w-[34rem] rounded-full bg-fuchsia-700/15 blur-[120px]" />
-      <div data-nebula className="absolute bottom-[-20%] left-[20%] h-[36rem] w-[36rem] rounded-full bg-cyan-600/15 blur-[130px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#0b0f29_0%,#03040d_55%)]" />
+      <div data-nebula className="absolute -left-40 top-[-10%] h-[38rem] w-[38rem] rounded-full bg-violet-700/[0.14] blur-[140px]" />
+      <div data-nebula className="absolute right-[-15%] top-[30%] h-[34rem] w-[34rem] rounded-full bg-indigo-600/[0.10] blur-[140px]" />
+      <div data-nebula className="absolute bottom-[-20%] left-[20%] h-[36rem] w-[36rem] rounded-full bg-cyan-700/[0.08] blur-[150px]" />
       <Starfield />
       <div ref={meteorLayer} className="absolute inset-0" />
     </div>

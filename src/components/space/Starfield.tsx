@@ -38,7 +38,7 @@ export function Starfield() {
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round((width * height) / 2600);
+      const count = Math.round((width * height) / 3600);
       stars = Array.from({ length: count }, () => {
         const depth = Math.random() ** 2 * 0.9 + 0.1;
         return {
@@ -63,7 +63,7 @@ export function Starfield() {
         const x = (((s.x + pointer.x * s.depth * 24) % width) + width) % width;
         const y = (((s.y + pointer.y * s.depth * 24 - scroll * s.depth * 0.12) % height) + height) % height;
         const twinkle = animated ? 0.55 + 0.45 * Math.sin(time * 0.001 * s.speed + s.phase) : 0.8;
-        ctx.fillStyle = `rgba(${s.color},${(twinkle * (0.35 + s.depth * 0.65)).toFixed(3)})`;
+        ctx.fillStyle = `rgba(${s.color},${(twinkle * (0.25 + s.depth * 0.55)).toFixed(3)})`;
         ctx.beginPath();
         ctx.arc(x, y, s.r, 0, Math.PI * 2);
         ctx.fill();
