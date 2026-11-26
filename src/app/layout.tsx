@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { JetBrains_Mono, Manrope, Sora } from 'next/font/google';
 import './globals.css';
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
+const sans = Manrope({ subsets: ['latin'], variable: '--font-sans' });
+const display = Sora({ subsets: ['latin'], variable: '--font-display' });
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 // Hide animated elements before first paint, unless the visitor prefers reduced motion.
 const motionScript = `if(window.matchMedia&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion')`;
@@ -49,7 +50,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       </head>
