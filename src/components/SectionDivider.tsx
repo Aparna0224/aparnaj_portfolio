@@ -30,12 +30,12 @@ export function SectionDivider() {
   });
 
   return (
-    <div ref={ref} aria-hidden="true" className="mx-auto flex max-w-6xl items-center gap-4 px-6">
-      <span data-divider-line className="h-px flex-1 origin-right bg-gradient-to-l from-white/20 to-transparent" />
-      <span data-divider-star className="text-xs text-violet-200/80">
+    <div ref={ref} aria-hidden="true" className="mx-auto flex max-w-6xl items-center gap-4 px-6 md:px-12 lg:pr-36">
+      <span data-divider-line className="h-px flex-1 origin-right bg-gradient-to-l from-cream/20 to-transparent" />
+      <span data-divider-star className="text-xs text-saffron">
         ✦
       </span>
-      <span data-divider-line className="h-px flex-1 origin-left bg-gradient-to-r from-white/20 to-transparent" />
+      <span data-divider-line className="h-px flex-1 origin-left bg-gradient-to-r from-cream/20 to-transparent" />
     </div>
   );
 }
