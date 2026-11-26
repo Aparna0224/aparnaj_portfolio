@@ -7,6 +7,7 @@ Personal portfolio site built with **Next.js (App Router)**, **Tailwind CSS**, a
 - ▲ Next.js 16 (App Router, static prerendering)
 - ⚛️ React 19
 - 🎨 Tailwind CSS v3
+- ✨ anime.js v4 (animations)
 - 🟦 TypeScript
 - 🧪 Vitest + Testing Library
 
@@ -20,7 +21,9 @@ Personal portfolio site built with **Next.js (App Router)**, **Tailwind CSS**, a
 │   │   ├── page.tsx     # home page (projects & skills data)
 │   │   ├── globals.css
 │   │   └── App.css
-│   └── components/      # Hero, About, Projects, Contact, Footer
+│   ├── components/      # Navbar, Hero, About, Projects, Contact, Footer
+│   │   └── space/       # starfield, nebula, shooting stars, planets
+│   └── lib/motion.ts    # anime.js scope + scroll-reveal helpers
 ├── next.config.ts
 ├── tailwind.config.js
 ├── postcss.config.cjs
