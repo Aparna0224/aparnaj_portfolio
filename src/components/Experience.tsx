@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import { animate } from 'animejs';
-import { revealGroups, useAnime } from '@/lib/motion';
+import { animate, spring } from 'animejs';
+import { revealGroups, revealHeadings, useAnime } from '@/lib/motion';
 import { EXPERIENCE } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
 
@@ -18,10 +18,23 @@ export function Experience() {
       const anim = animate(line, { scaleY: [0, 1], duration: 1800, ease: 'inOutQuart', autoplay: false });
       ctx.inView(line, () => anim.play());
     }
+
+    // Each milestone dot pops in with a spring as its role scrolls into view.
+    ctx.root.querySelectorAll<HTMLElement>('[data-dot]').forEach((dot) => {
+      const anim = animate(dot, { scale: [0, 1], ease: spring({ bounce: 0.55, duration: 700 }), delay: 250, autoplay: false });
+      ctx.inView(dot, () => anim.play());
+    });
+
+    return revealHeadings(ctx);
   });
 
   return (
-    <section ref={ref} id="experience" className="relative px-6 py-28 md:py-36">
+    <section
+      ref={ref}
+      id="experience"
+      className="relative px-6 py-28 md:py-36 section section-band"
+      style={{ '--accent': '103 232 249' } as React.CSSProperties}
+    >
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading index="02" label="Experience">
           Where I&apos;ve <span className="text-gradient">worked</span>
@@ -31,7 +44,7 @@ export function Experience() {
           <span
             data-timeline-line
             aria-hidden="true"
-            className="absolute bottom-2 left-[7px] top-2 w-px origin-top bg-gradient-to-b from-violet-300/60 via-white/15 to-transparent md:left-[calc(25%+7px)]"
+            className="absolute bottom-2 left-[7px] top-2 w-px origin-top bg-gradient-to-b from-[rgb(var(--accent)/0.6)] via-white/15 to-transparent md:left-[calc(25%+7px)]"
           />
 
           <ol data-reveal-group className="space-y-12">
@@ -43,10 +56,11 @@ export function Experience() {
                 </div>
 
                 <span
+                  data-dot
                   aria-hidden="true"
-                  className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border border-violet-300/60 bg-space-950 md:left-[calc(25%)]"
+                  className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border border-[rgb(var(--accent)/0.6)] bg-space-950 md:left-[calc(25%)]"
                 >
-                  <span className="absolute inset-[4px] rounded-full bg-violet-300" />
+                  <span className="absolute inset-[4px] rounded-full bg-[rgb(var(--accent))]" />
                 </span>
 
                 <div className="md:col-span-3 md:pl-10">
