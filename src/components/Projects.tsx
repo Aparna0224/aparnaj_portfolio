@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { revealGroups, useAnime } from '@/lib/motion';
+import { revealGroups, revealHeadings, tilt, useAnime } from '@/lib/motion';
 import type { Project } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
 import { ArrowUpRightIcon, GitHubIcon } from './icons';
@@ -18,10 +18,23 @@ function trackSpotlight(e: React.PointerEvent<HTMLElement>) {
 
 export function Projects({ projects }: ProjectsProps) {
   const ref = useRef<HTMLElement>(null);
-  useAnime(ref, revealGroups);
+  useAnime(ref, (ctx) => {
+    revealGroups(ctx);
+    const undoTilt = tilt(ctx.root, 3);
+    const undoHeadings = revealHeadings(ctx);
+    return () => {
+      undoTilt();
+      undoHeadings();
+    };
+  });
 
   return (
-    <section ref={ref} id="projects" className="relative px-6 py-28 md:py-36">
+    <section
+      ref={ref}
+      id="projects"
+      className="relative px-6 py-28 md:py-36 section"
+      style={{ '--accent': '129 140 248' } as React.CSSProperties}
+    >
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           index="03"
@@ -31,11 +44,12 @@ export function Projects({ projects }: ProjectsProps) {
           Selected <span className="text-gradient">work</span>
         </SectionHeading>
 
-        <div data-reveal-group className="grid gap-5">
+        <div data-reveal-group className="grid gap-5 [perspective:1400px]">
           {projects.map((project, index) => (
             <article
               key={project.title}
               data-reveal
+              data-tilt
               onPointerMove={trackSpotlight}
               className="group glass relative overflow-hidden rounded-2xl transition-colors duration-500 hover:border-white/15"
             >
@@ -43,7 +57,7 @@ export function Projects({ projects }: ProjectsProps) {
 
               <div className="relative grid gap-6 p-7 md:grid-cols-12 md:gap-10 md:p-9">
                 <div className="flex items-baseline gap-4 font-mono text-xs text-slate-500 md:col-span-2 md:flex-col md:gap-2">
-                  <span className="text-violet-300">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="text-[rgb(var(--accent))]">{String(index + 1).padStart(2, '0')}</span>
                   {project.year && <span>{project.year}</span>}
                 </div>
 
