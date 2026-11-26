@@ -14,6 +14,16 @@ export const NAV_LINKS = [
   { id: 'contact', label: 'Contact' },
 ];
 
+/** Every section, in page order, for the side index. */
+export const SECTIONS = [
+  { id: 'home', label: 'Intro' },
+  { id: 'about', label: 'About' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Work' },
+  { id: 'achievements', label: 'Recognition' },
+  { id: 'contact', label: 'Contact' },
+];
+
 export interface Stat {
   value: number;
   decimals?: number;
