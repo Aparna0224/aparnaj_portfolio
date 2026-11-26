@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { animate, stagger } from 'animejs';
-import { useAnime } from '@/lib/motion';
+import { animate, createAnimatable, stagger } from 'animejs';
+import { magnetic, useAnime } from '@/lib/motion';
 import { NAV_LINKS } from '@/lib/site';
 
 export function Navbar() {
@@ -30,7 +30,7 @@ export function Navbar() {
     };
   }, []);
 
-  useAnime(ref, () => {
+  useAnime(ref, ({ root }) => {
     animate('[data-reveal]', {
       opacity: [0, 1],
       y: [-12, 0],
@@ -38,6 +38,22 @@ export function Navbar() {
       duration: 900,
       ease: 'outExpo',
     });
+
+    // Reading-progress bar, smoothed by an anime.js animatable.
+    const bar = root.querySelector<HTMLElement>('[data-progress]')!;
+    const progress = createAnimatable(bar, { scaleX: 300, ease: 'out(3)' });
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.scaleX(max > 0 ? window.scrollY / max : 0);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const undoMagnetic = magnetic(root, 0.25);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      undoMagnetic();
+    };
   });
 
   return (
@@ -69,11 +85,16 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          <a data-reveal href="#contact" className="btn-primary ml-2 px-4 py-2">
+          <a data-reveal data-magnetic href="#contact" className="btn-primary ml-2 px-4 py-2">
             Get in touch
           </a>
         </div>
       </nav>
+      <div
+        data-progress
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-[-1px] h-px origin-left scale-x-0 bg-gradient-to-r from-violet-300 via-indigo-300 to-cyan-200"
+      />
     </header>
   );
 }
