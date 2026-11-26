@@ -1,6 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { animate } from 'animejs';
+import { motionEnabled, revealGroups, useAnime } from '@/lib/motion';
+import { SectionHeading } from './SectionHeading';
+import { Planet } from './space/Planet';
 
 interface ContactProps {
   formData: {
@@ -14,14 +18,36 @@ interface ContactProps {
   onFormDataChange: (data: { name: string; email: string; message: string }) => void;
 }
 
-export function Contact({
-  formData,
-  formStatus,
-  formError,
-  onSubmit,
-  onFormDataChange
-}: ContactProps) {
+const SOCIALS = [
+  { href: 'https://www.linkedin.com/in/aparna-j-a13647297/', label: 'LinkedIn', aria: 'Visit LinkedIn profile' },
+  { href: 'https://github.com/Aparna0224', label: 'GitHub', aria: 'Visit GitHub profile' },
+];
+
+export function Contact({ formData, formStatus, formError, onSubmit, onFormDataChange }: ContactProps) {
   const [emailCopied, setEmailCopied] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const rocketRef = useRef<HTMLSpanElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
+
+  useAnime(ref, revealGroups);
+
+  // Rocket lifts off while sending.
+  useEffect(() => {
+    const rocket = rocketRef.current;
+    if (!rocket || !motionEnabled()) return;
+    if (formStatus === 'loading') {
+      const anim = animate(rocket, { x: [0, 3, -3, 0], y: [0, -3, 0], duration: 400, loop: true, ease: 'inOutSine' });
+      return () => {
+        anim.revert();
+      };
+    }
+  }, [formStatus]);
+
+  // Status message drifts in.
+  useEffect(() => {
+    if (!statusRef.current || !motionEnabled()) return;
+    animate(statusRef.current, { opacity: [0, 1], y: [12, 0], duration: 700, ease: 'outExpo' });
+  }, [formStatus]);
 
   const handleEmailCopy = () => {
     const email = 'aparna@example.com';
@@ -29,125 +55,121 @@ export function Contact({
     setEmailCopied(true);
     setTimeout(() => setEmailCopied(false), 2000);
   };
+
+  const isLoading = formStatus === 'loading';
+
   return (
-    <section id="contact" className="min-h-screen flex items-center px-6 py-20 border-t border-green-900/30">
-      <div className="max-w-4xl mx-auto w-full">
-        <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-light mb-4">
-            Get In <span className="text-green-500">Touch</span>
-          </h2>
-          <div className="w-24 h-px bg-green-500 mb-6"></div>
-          <p className="text-gray-400 text-lg">
-            Interested in collaborating or have a project in mind? I&apos;d love to hear from you.
-          </p>
-        </div>
+    <section ref={ref} id="contact" className="relative flex min-h-screen items-center px-6 py-28">
+      <Planet
+        className="bottom-24 left-[5%] hidden h-16 w-16 lg:block"
+        tone="from-cyan-200 via-sky-600 to-indigo-950"
+        ring={false}
+      />
 
-        <div className="border border-green-900/30 p-8 md:p-12">
-          <form onSubmit={onSubmit} className="space-y-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <label htmlFor="name" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
-                  className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white placeholder-gray-600"
-                  placeholder="Your name"
-                  aria-label="Your name"
-                  disabled={formStatus === 'loading'}
-                />
+      <div className="mx-auto w-full max-w-4xl">
+        <SectionHeading
+          index="03"
+          label="Contact"
+          description="Interested in collaborating or have a project in mind? I'd love to hear from you."
+        >
+          Let&apos;s build something <span className="text-gradient">stellar</span>
+        </SectionHeading>
+
+        <div data-reveal-group>
+          <div data-reveal className="glass rounded-3xl p-8 md:p-12">
+            <form onSubmit={onSubmit} className="space-y-8">
+              <div className="grid gap-8 md:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
+                    className="field"
+                    placeholder="Your name"
+                    aria-label="Your name"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
+                    className="field"
+                    placeholder="your@email.com"
+                    aria-label="Your email"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                  Email
+                <label htmlFor="message" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                  Message
                 </label>
-                <input
-                  id="email"
-                  type="email"
+                <textarea
+                  id="message"
                   required
-                  value={formData.email}
-                  onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
-                  className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white placeholder-gray-600"
-                  placeholder="your@email.com"
-                  aria-label="Your email"
-                  disabled={formStatus === 'loading'}
+                  value={formData.message}
+                  onChange={(e) => onFormDataChange({ ...formData, message: e.target.value })}
+                  rows={5}
+                  className="field resize-none"
+                  placeholder="Tell me about your project..."
+                  aria-label="Your message"
+                  disabled={isLoading}
                 />
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="message" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                Message
-              </label>
-              <textarea
-                id="message"
-                required
-                value={formData.message}
-                onChange={(e) => onFormDataChange({ ...formData, message: e.target.value })}
-                rows={6}
-                className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white resize-none placeholder-gray-600"
-                placeholder="Tell me about your project..."
-                aria-label="Your message"
-                disabled={formStatus === 'loading'}
-              />
-            </div>
+              <div className="flex flex-wrap items-center gap-6">
+                <button type="submit" disabled={isLoading} className="btn-primary px-9">
+                  {isLoading ? 'Sending...' : 'Send Message'}
+                  <span ref={rocketRef} aria-hidden="true" className="inline-block">
+                    🚀
+                  </span>
+                </button>
 
+                {formStatus === 'success' && (
+                  <div ref={statusRef} aria-live="polite" className="text-sm text-cyan-200">
+                    ✓ Thank you for reaching out! I&apos;ll get back to you soon.
+                  </div>
+                )}
+
+                {formStatus === 'error' && (
+                  <div ref={statusRef} aria-live="polite" role="alert" className="text-sm text-rose-300">
+                    ✗ {formError || 'Failed to send message. Please try again.'}
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+
+          <div data-reveal className="mt-10 flex justify-center gap-3">
+            {SOCIALS.map((s) => (
+              <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.aria} className="btn-ghost px-5 py-2">
+                {s.label}
+              </a>
+            ))}
             <button
-              type="submit"
-              disabled={formStatus === 'loading'}
-              className="px-12 py-4 bg-green-600 text-black font-medium hover:bg-green-500 transition-all uppercase tracking-wide text-sm disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 transition-transform"
+              type="button"
+              onClick={handleEmailCopy}
+              title={emailCopied ? 'Email copied!' : 'Click to copy email'}
+              aria-label="Copy email address"
+              className={`btn-ghost px-5 py-2 ${emailCopied ? 'border-cyan-300/60 text-cyan-100' : ''}`}
             >
-              {formStatus === 'loading' ? 'Sending...' : 'Send Message'}
+              {emailCopied ? '✓ Email Copied' : 'Email'}
             </button>
-
-            {formStatus === 'success' && (
-              <div aria-live="polite" className="p-4 bg-green-900/20 border border-green-600/50 rounded text-green-400 text-sm">
-                ✓ Thank you for reaching out! I&apos;ll get back to you soon.
-              </div>
-            )}
-
-            {formStatus === 'error' && (
-              <div aria-live="polite" role="alert" className="p-4 bg-red-900/20 border border-red-600/50 rounded text-red-400 text-sm">
-                ✗ {formError || 'Failed to send message. Please try again.'}
-              </div>
-            )}
-          </form>
-        </div>
-
-        <div className="mt-12 flex justify-center gap-8">
-          <a
-            href="https://www.linkedin.com/in/aparna-j-a13647297/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit LinkedIn profile"
-            className="text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide transform hover:scale-110"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="https://github.com/Aparna0224"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit GitHub profile"
-            className="text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide transform hover:scale-110"
-          >
-            GitHub
-          </a>
-          <button
-            onClick={handleEmailCopy}
-            title={emailCopied ? 'Email copied!' : 'Click to copy email'}
-            className={`text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide cursor-pointer bg-none border-none p-0 font-inherit transform hover:scale-110 ${
-              emailCopied ? 'text-green-400' : ''
-            }`}
-            aria-label="Copy email address"
-          >
-            {emailCopied ? '✓ Email Copied' : 'Email'}
-          </button>
+          </div>
         </div>
       </div>
     </section>
