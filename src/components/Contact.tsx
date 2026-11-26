@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate } from 'animejs';
 import { motionEnabled, revealGroups, useAnime } from '@/lib/motion';
+import { SITE } from '@/lib/site';
 import { SectionHeading } from './SectionHeading';
-import { Planet } from './space/Planet';
+import { ArrowUpRightIcon, CheckIcon, GitHubIcon, LinkedInIcon, MailIcon, SendIcon } from './icons';
 
 interface ContactProps {
   formData: {
@@ -19,39 +20,39 @@ interface ContactProps {
 }
 
 const SOCIALS = [
-  { href: 'https://www.linkedin.com/in/aparna-j-a13647297/', label: 'LinkedIn', aria: 'Visit LinkedIn profile' },
-  { href: 'https://github.com/Aparna0224', label: 'GitHub', aria: 'Visit GitHub profile' },
+  { href: SITE.linkedin, label: 'LinkedIn', handle: 'Aparna J', aria: 'Visit LinkedIn profile', Icon: LinkedInIcon },
+  { href: SITE.github, label: 'GitHub', handle: 'Aparna0224', aria: 'Visit GitHub profile', Icon: GitHubIcon },
 ];
+
+const rowClass =
+  'group flex w-full items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-left transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.04]';
 
 export function Contact({ formData, formStatus, formError, onSubmit, onFormDataChange }: ContactProps) {
   const [emailCopied, setEmailCopied] = useState(false);
   const ref = useRef<HTMLElement>(null);
-  const rocketRef = useRef<HTMLSpanElement>(null);
+  const sendIconRef = useRef<HTMLSpanElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
   useAnime(ref, revealGroups);
 
-  // Rocket lifts off while sending.
+  // Paper plane drifts while sending.
   useEffect(() => {
-    const rocket = rocketRef.current;
-    if (!rocket || !motionEnabled()) return;
-    if (formStatus === 'loading') {
-      const anim = animate(rocket, { x: [0, 3, -3, 0], y: [0, -3, 0], duration: 400, loop: true, ease: 'inOutSine' });
-      return () => {
-        anim.revert();
-      };
-    }
+    const icon = sendIconRef.current;
+    if (!icon || !motionEnabled() || formStatus !== 'loading') return;
+    const anim = animate(icon, { x: [0, 4, 0], y: [0, -4, 0], duration: 700, loop: true, ease: 'inOutSine' });
+    return () => {
+      anim.revert();
+    };
   }, [formStatus]);
 
-  // Status message drifts in.
+  // Status message eases in.
   useEffect(() => {
     if (!statusRef.current || !motionEnabled()) return;
-    animate(statusRef.current, { opacity: [0, 1], y: [12, 0], duration: 700, ease: 'outExpo' });
+    animate(statusRef.current, { opacity: [0, 1], y: [8, 0], duration: 600, ease: 'outExpo' });
   }, [formStatus]);
 
   const handleEmailCopy = () => {
-    const email = 'aparna@example.com';
-    navigator.clipboard.writeText(email);
+    navigator.clipboard.writeText(SITE.email);
     setEmailCopied(true);
     setTimeout(() => setEmailCopied(false), 2000);
   };
@@ -59,28 +60,51 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
   const isLoading = formStatus === 'loading';
 
   return (
-    <section ref={ref} id="contact" className="relative flex min-h-screen items-center px-6 py-28">
-      <Planet
-        className="bottom-24 left-[5%] hidden h-16 w-16 lg:block"
-        tone="from-cyan-200 via-sky-600 to-indigo-950"
-        ring={false}
-      />
-
-      <div className="mx-auto w-full max-w-4xl">
+    <section ref={ref} id="contact" className="relative px-6 py-28 md:py-36">
+      <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
-          index="03"
+          index="05"
           label="Contact"
           description="Interested in collaborating or have a project in mind? I'd love to hear from you."
         >
-          Let&apos;s build something <span className="text-gradient">stellar</span>
+          Let&apos;s <span className="text-gradient">work together</span>
         </SectionHeading>
 
-        <div data-reveal-group>
-          <div data-reveal className="glass rounded-3xl p-8 md:p-12">
-            <form onSubmit={onSubmit} className="space-y-8">
-              <div className="grid gap-8 md:grid-cols-2">
+        <div data-reveal-group className="grid gap-8 lg:grid-cols-12">
+          <div data-reveal className="space-y-3 lg:col-span-4">
+            <button
+              type="button"
+              onClick={handleEmailCopy}
+              title={emailCopied ? 'Email copied!' : 'Click to copy email'}
+              aria-label="Copy email address"
+              className={rowClass}
+            >
+              <span className="icon-btn flex-shrink-0">{emailCopied ? <CheckIcon /> : <MailIcon />}</span>
+              <span className="min-w-0">
+                <span className="block text-xs text-slate-500">Email</span>
+                <span className="block truncate text-sm text-white">{emailCopied ? '✓ Email Copied' : SITE.email}</span>
+              </span>
+            </button>
+
+            {SOCIALS.map(({ href, label, handle, aria, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={aria} className={rowClass}>
+                <span className="icon-btn flex-shrink-0">
+                  <Icon />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs text-slate-500">{label}</span>
+                  <span className="block truncate text-sm text-white">{handle}</span>
+                </span>
+                <ArrowUpRightIcon width={16} height={16} className="text-slate-500 transition-colors group-hover:text-white" />
+              </a>
+            ))}
+          </div>
+
+          <div data-reveal className="glass rounded-2xl p-6 sm:p-8 lg:col-span-8">
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                  <label htmlFor="name" className="mb-2 block text-sm text-slate-300">
                     Name
                   </label>
                   <input
@@ -95,9 +119,8 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                     disabled={isLoading}
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                  <label htmlFor="email" className="mb-2 block text-sm text-slate-300">
                     Email
                   </label>
                   <input
@@ -107,7 +130,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                     value={formData.email}
                     onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
                     className="field"
-                    placeholder="your@email.com"
+                    placeholder="you@company.com"
                     aria-label="Your email"
                     disabled={isLoading}
                   />
@@ -115,7 +138,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
               </div>
 
               <div>
-                <label htmlFor="message" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                <label htmlFor="message" className="mb-2 block text-sm text-slate-300">
                   Message
                 </label>
                 <textarea
@@ -131,44 +154,29 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-6">
-                <button type="submit" disabled={isLoading} className="btn-primary px-9">
+              <div className="flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-h-5 text-sm">
+                  {formStatus === 'success' && (
+                    <div ref={statusRef} aria-live="polite" className="flex items-center gap-2 text-emerald-300">
+                      <CheckIcon width={16} height={16} />
+                      Thank you for reaching out! I&apos;ll get back to you soon.
+                    </div>
+                  )}
+                  {formStatus === 'error' && (
+                    <div ref={statusRef} aria-live="polite" role="alert" className="text-rose-300">
+                      {formError || 'Failed to send message. Please try again.'}
+                    </div>
+                  )}
+                </div>
+
+                <button type="submit" disabled={isLoading} className="btn-primary">
                   {isLoading ? 'Sending...' : 'Send Message'}
-                  <span ref={rocketRef} aria-hidden="true" className="inline-block">
-                    🚀
+                  <span ref={sendIconRef} className="inline-flex">
+                    <SendIcon width={16} height={16} />
                   </span>
                 </button>
-
-                {formStatus === 'success' && (
-                  <div ref={statusRef} aria-live="polite" className="text-sm text-cyan-200">
-                    ✓ Thank you for reaching out! I&apos;ll get back to you soon.
-                  </div>
-                )}
-
-                {formStatus === 'error' && (
-                  <div ref={statusRef} aria-live="polite" role="alert" className="text-sm text-rose-300">
-                    ✗ {formError || 'Failed to send message. Please try again.'}
-                  </div>
-                )}
               </div>
             </form>
-          </div>
-
-          <div data-reveal className="mt-10 flex justify-center gap-3">
-            {SOCIALS.map((s) => (
-              <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.aria} className="btn-ghost px-5 py-2">
-                {s.label}
-              </a>
-            ))}
-            <button
-              type="button"
-              onClick={handleEmailCopy}
-              title={emailCopied ? 'Email copied!' : 'Click to copy email'}
-              aria-label="Copy email address"
-              className={`btn-ghost px-5 py-2 ${emailCopied ? 'border-cyan-300/60 text-cyan-100' : ''}`}
-            >
-              {emailCopied ? '✓ Email Copied' : 'Email'}
-            </button>
           </div>
         </div>
       </div>

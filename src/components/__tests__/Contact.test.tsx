@@ -171,7 +171,7 @@ describe('Contact Component', () => {
     await user.click(emailButton);
 
     await waitFor(() => {
-      expect(clipboardWriteText).toHaveBeenCalledWith('aparna@example.com');
+      expect(clipboardWriteText).toHaveBeenCalledWith('aparna6024@gmail.com');
     });
   });
 });
