@@ -3,6 +3,8 @@ import { About } from '@/components/About';
 import { Projects } from '@/components/Projects';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
+import { Navbar } from '@/components/Navbar';
+import { SpaceBackground } from '@/components/space/SpaceBackground';
 
 const projects = [
   {
@@ -37,12 +39,16 @@ const skills = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-gray-100">
-      <Hero />
-      <About skills={skills} />
-      <Projects projects={projects} />
-      <ContactSection />
+    <>
+      <SpaceBackground />
+      <Navbar />
+      <main>
+        <Hero />
+        <About skills={skills} />
+        <Projects projects={projects} />
+        <ContactSection />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }
