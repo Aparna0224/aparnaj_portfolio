@@ -2,82 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Background lives on <html> only: a <body> background would paint over the
+   fixed particle field, which sits at a negative z-index. */
+html {
+  background: #0a0806;
+}
+
 :root {
   color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
-  background: #03040d;
+  overflow-x: clip;
 }
 
 body {
-  @apply font-sans text-slate-300 antialiased;
+  @apply font-sans text-cream/70 antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: rgba(167, 139, 250, 0.35);
+  background: rgba(242, 140, 40, 0.32);
   color: #fff;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #03040d;
+  background: #0a0806;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e1b4b;
+  background: #2a2019;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed;
+  background: #d9731a;
 }
 
 :focus-visible {
-  outline: 2px solid #a5f3fc;
+  outline: 2px solid #f28c28;
   outline-offset: 3px;
 }
 
 @layer components {
-  .glass {
-    @apply border border-white/[0.08] bg-white/[0.025] backdrop-blur-md;
+  /* One material for cards and panels. */
+  .card {
+    @apply rounded-3xl border border-cream/10 bg-ink-900/70 backdrop-blur-sm;
   }
 
-  .icon-btn {
-    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-slate-400 transition-colors duration-300 hover:border-white/30 hover:text-white;
+  /* Italic serif accent words inside sans headlines. */
+  .serif-accent {
+    @apply font-serif font-normal italic tracking-normal text-saffron-300;
   }
 
-  .text-gradient {
-    @apply bg-gradient-to-r from-violet-200 via-indigo-200 to-cyan-200 bg-clip-text text-transparent;
-  }
-
-  .eyebrow {
-    @apply font-mono text-xs uppercase tracking-[0.25em] text-slate-400;
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-[0.22em] text-cream/45;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-space-950 shadow-[0_0_40px_-12px_rgba(196,181,253,0.8)] transition-colors duration-300 hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-cream px-6 py-3 text-sm font-medium text-ink-950 transition-colors duration-300 hover:bg-white active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-slate-200 transition-colors duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-cream/15 px-6 py-3 text-sm font-medium text-cream transition-colors duration-300 hover:border-cream/40 hover:bg-cream/[0.04] active:scale-[0.97];
+  }
+
+  .icon-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream/[0.12] text-cream/60 transition-colors duration-300 hover:border-cream/40 hover:text-cream;
   }
 
   .chip {
-    @apply rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-slate-300;
+    @apply rounded-full border border-cream/10 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.1em] text-cream/60;
   }
 
   .field {
-    @apply w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white placeholder-slate-600 transition-colors duration-300 focus:border-violet-300/60 focus:bg-white/[0.04] focus:outline-none disabled:opacity-60;
+    @apply w-full rounded-2xl border border-cream/10 bg-cream/[0.02] px-4 py-3 text-sm text-cream placeholder-cream/25 transition-colors duration-300 focus:border-saffron/60 focus:bg-cream/[0.04] focus:outline-none disabled:opacity-60;
   }
+}
+
+/* Alternate sections sit on a faint band so neighbours read as separate. */
+.section-band {
+  background: linear-gradient(to bottom, rgb(237 230 214 / 0.025), rgb(237 230 214 / 0.008));
+  border-block: 1px solid rgb(237 230 214 / 0.06);
 }
 
 /* Elements animated in by anime.js start hidden, but only when motion is
    allowed (the `motion` class is set by an inline script in the layout). */
 .motion [data-reveal],
-.motion [data-chip] {
+.motion [data-chip],
+.motion [data-heading],
+.motion [data-divider-star] {
   opacity: 0;
 }
 
@@ -85,72 +101,27 @@ body {
   transform: scaleY(0);
 }
 
-.motion [data-heading] {
-  opacity: 0;
-}
-
 .motion [data-dot] {
   transform: scale(0);
-}
-
-/* Split heading words: room for descenders inside the mask, and gradient
-   text re-applied per word (a transformed child loses the parent's clip). */
-[data-heading] .word {
-  padding-bottom: 0.12em;
-}
-
-.text-gradient .word {
-  @apply bg-gradient-to-r from-violet-200 via-indigo-200 to-cyan-200 bg-clip-text text-transparent;
-}
-
-/* Split characters need a box so transforms apply. */
-.split-chars span {
-  display: inline-block;
-}
-
-/* Project card spotlight that follows the cursor. */
-.spotlight {
-  background: radial-gradient(
-    420px circle at var(--x, 50%) var(--y, 50%),
-    rgba(167, 139, 250, 0.08),
-    transparent 60%
-  );
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* Each section gets its own accent (an RGB triplet in --accent) shown as a
-   soft glow along its top edge. */
-.section {
-  --accent: 167 139 250;
-  position: relative;
-  isolation: isolate;
-}
-
-.section::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 28rem;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(55% 100% at 50% 0%, rgb(var(--accent) / 0.09), transparent 70%);
-}
-
-/* Alternate sections sit on a faint band so neighbours read as separate. */
-.section-band {
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.018), rgb(255 255 255 / 0.008));
-  border-block: 1px solid rgb(255 255 255 / 0.05);
 }
 
 .motion [data-divider-line] {
   transform: scaleX(0);
 }
 
-.motion [data-divider-star] {
-  opacity: 0;
+/* Split words keep room for descenders inside their mask. */
+[data-heading] .word,
+[data-hero-title] .word {
+  padding-bottom: 0.12em;
+}
+
+/* Project card light that follows the cursor. */
+.spotlight {
+  background: radial-gradient(420px circle at var(--x, 50%) var(--y, 50%), rgba(242, 140, 40, 0.07), transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

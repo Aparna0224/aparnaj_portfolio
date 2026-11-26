@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { JetBrains_Mono, Manrope, Sora } from 'next/font/google';
+import { Instrument_Serif, JetBrains_Mono, Manrope } from 'next/font/google';
+import { Grain } from '@/components/field/Grain';
 import './globals.css';
 
 const sans = Manrope({ subsets: ['latin'], variable: '--font-sans' });
-const display = Sora({ subsets: ['latin'], variable: '--font-display' });
+const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 // Hide animated elements before first paint, unless the visitor prefers reduced motion.
@@ -45,16 +46,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#03040d',
+  themeColor: '#0a0806',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Grain />
+      </body>
     </html>
   );
 }
