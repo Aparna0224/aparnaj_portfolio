@@ -34,7 +34,7 @@ export function About({ skills }: AboutProps) {
             </p>
 
             <p className="text-gray-300 leading-relaxed text-lg">
-              When I'm not training models or debugging code, I'm probably exploring new 
+              When I&apos;m not training models or debugging code, I&apos;m probably exploring new 
               research papers or experimenting with emerging AI technologies.
             </p>
 

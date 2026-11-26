@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 interface ContactProps {
@@ -36,7 +38,7 @@ export function Contact({
           </h2>
           <div className="w-24 h-px bg-green-500 mb-6"></div>
           <p className="text-gray-400 text-lg">
-            Interested in collaborating or have a project in mind? I'd love to hear from you.
+            Interested in collaborating or have a project in mind? I&apos;d love to hear from you.
           </p>
         </div>
 
@@ -105,7 +107,7 @@ export function Contact({
 
             {formStatus === 'success' && (
               <div aria-live="polite" className="p-4 bg-green-900/20 border border-green-600/50 rounded text-green-400 text-sm">
-                ✓ Thank you for reaching out! I'll get back to you soon.
+                ✓ Thank you for reaching out! I&apos;ll get back to you soon.
               </div>
             )}
 

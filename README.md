@@ -1,134 +1,46 @@
+# Aparna J — Portfolio
 
-#  React + Tailwind CSS + Vite + TypeScript Template
-
-This branch provides a **React** starter template configured with **Tailwind CSS**, **Vite**, and **TypeScript**. Ideal for modern frontend development with fast builds and utility-first styling.
-
----
-
-## 📁 Folder Structure
-
-
-``` 
-├── public/  
-├── src/  
-├── .gitignore  
-├── README.md  
-├── eslint.config.js  
-├── index.html  
-├── package-lock.json  
-├── package.json  
-├── postcss.config.cjs  
-├── tailwind.config.js  
-├── tsconfig.json  
-├── tsconfig.app.json  
-├── tsconfig.node.json  
-└── vite.config.ts
-
-```
-
----
+Personal portfolio site built with **Next.js (App Router)**, **Tailwind CSS**, and **TypeScript**.
 
 ## 🧰 Tech Stack
 
-- ⚛️ React
-- ⚡ Vite
+- ▲ Next.js 16 (App Router, static prerendering)
+- ⚛️ React 19
 - 🎨 Tailwind CSS v3
 - 🟦 TypeScript
+- 🧪 Vitest + Testing Library
 
+## 📁 Folder Structure
 
----
+```
+├── public/              # static assets (images)
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx   # root layout + SEO metadata
+│   │   ├── page.tsx     # home page (projects & skills data)
+│   │   ├── globals.css
+│   │   └── App.css
+│   └── components/      # Hero, About, Projects, Contact, Footer
+├── next.config.ts
+├── tailwind.config.js
+├── postcss.config.cjs
+├── eslint.config.mjs
+└── vitest.config.ts
+```
 
 ## 🚀 Getting Started
 
-### 1. Clone the Repository & Checkout the Tailwind Branch
-
-```bash
-https://github.com/dharshan-kumarj/React_CSS_Frameworks_Starter/tree/Tailwind
-cd React_CSS_Frameworks_Starter
-git checkout Tailwind
-
-```
-
-### 2. Install Dependencies
-
 ```bash
 npm install
-
+npm run dev      # http://localhost:3000
 ```
 
-### 3. Start the Dev Server
+## 📜 Scripts
 
-```bash
-npm run dev
-
-```
-
-----------
-
-## 🧩 Tailwind CSS Configuration
-
-###  `tailwind.config.js`
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-
-```
-### `postcss.config.cjs`
-
-```js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-
-```
-
-###  `src/index.css`
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-```
-
-----------
-
-## 🧪 Verifying Tailwind CSS
-
-To check if Tailwind is working:
-
-1.  Go to `src/App.tsx`
-    
-2.  Add a class like `bg-blue-600 text-white p-4 rounded`
-    
-3.  Run the app and see the changes
-    
-
-----------
-
-## 🏗️ Build for Production
-
-```bash
-npm run build
-
-```
-
-Then preview using:
-
-```bash
-npm run preview
-
-```
+| Command         | Description                  |
+| --------------- | ---------------------------- |
+| `npm run dev`   | Start the dev server         |
+| `npm run build` | Production build             |
+| `npm run start` | Serve the production build   |
+| `npm run lint`  | Run ESLint (Next.js config)  |
+| `npm test`      | Run tests with Vitest        |

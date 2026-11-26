@@ -1,3 +1,5 @@
+'use client';
+
 interface Project {
   title: string;
   tech: string[];

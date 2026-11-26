@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export function Hero() {
   return (
     <section id="home" className="min-h-screen flex items-center px-6">
@@ -44,10 +46,12 @@ export function Hero() {
             <div className="relative">
               <div className="absolute inset-0 bg-green-500/20 blur-2xl"></div>
               <div className="relative border border-green-600/30">
-                <img 
-                  src="/images/aparnaj.jpg" 
+                <Image
+                  src="/images/aparnaj.jpg"
                   alt="Aparna J"
-                  loading="lazy"
+                  width={384}
+                  height={384}
+                  priority
                   className="w-80 h-80 md:w-96 md:h-96 object-cover transition-all duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-500"></div>
