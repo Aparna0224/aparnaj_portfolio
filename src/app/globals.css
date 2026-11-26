@@ -85,6 +85,24 @@ body {
   transform: scaleY(0);
 }
 
+.motion [data-heading] {
+  opacity: 0;
+}
+
+.motion [data-dot] {
+  transform: scale(0);
+}
+
+/* Split heading words: room for descenders inside the mask, and gradient
+   text re-applied per word (a transformed child loses the parent's clip). */
+[data-heading] .word {
+  padding-bottom: 0.12em;
+}
+
+.text-gradient .word {
+  @apply bg-gradient-to-r from-violet-200 via-indigo-200 to-cyan-200 bg-clip-text text-transparent;
+}
+
 /* Split characters need a box so transforms apply. */
 .split-chars span {
   display: inline-block;
@@ -103,4 +121,36 @@ body {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* Each section gets its own accent (an RGB triplet in --accent) shown as a
+   soft glow along its top edge. */
+.section {
+  --accent: 167 139 250;
+  position: relative;
+  isolation: isolate;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(55% 100% at 50% 0%, rgb(var(--accent) / 0.09), transparent 70%);
+}
+
+/* Alternate sections sit on a faint band so neighbours read as separate. */
+.section-band {
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.018), rgb(255 255 255 / 0.008));
+  border-block: 1px solid rgb(255 255 255 / 0.05);
+}
+
+.motion [data-divider-line] {
+  transform: scaleX(0);
+}
+
+.motion [data-divider-star] {
+  opacity: 0;
 }
