@@ -22,8 +22,8 @@ Personal portfolio site built with **Next.js (App Router)**, **Tailwind CSS**, a
 │   │   ├── globals.css
 │   │   └── App.css
 │   ├── components/      # Navbar, Hero, About, Projects, Contact, Footer
-│   │   └── space/       # starfield, nebula, shooting stars, planets
-│   └── lib/motion.ts    # anime.js scope + scroll-reveal helpers
+│   │   └── space/       # starfield, nebula, shooting stars
+│   └── lib/             # anime.js helpers (motion.ts), site info (site.ts)
 ├── next.config.ts
 ├── tailwind.config.js
 ├── postcss.config.cjs
