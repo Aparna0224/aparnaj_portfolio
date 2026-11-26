@@ -5,16 +5,20 @@ import { Projects } from '@/components/Projects';
 import { Achievements } from '@/components/Achievements';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
-import { Navbar } from '@/components/Navbar';
-import { SpaceBackground } from '@/components/space/SpaceBackground';
+import { TopBar } from '@/components/TopBar';
+import { SideIndex } from '@/components/SideIndex';
+import { ParticleField } from '@/components/field/ParticleField';
+import { CursorRing } from '@/components/field/CursorRing';
 import { SectionDivider } from '@/components/SectionDivider';
 import { PROJECTS, SKILLS } from '@/lib/site';
 
 export default function Home() {
   return (
     <>
-      <SpaceBackground />
-      <Navbar />
+      <ParticleField />
+      <TopBar />
+      <SideIndex />
+      <CursorRing />
       <main>
         <Hero />
         <SectionDivider />
