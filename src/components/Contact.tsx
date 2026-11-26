@@ -25,7 +25,7 @@ const SOCIALS = [
 ];
 
 const rowClass =
-  'group flex w-full items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-left transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.04]';
+  'group flex w-full items-center gap-4 rounded-2xl border border-cream/10 bg-cream/[0.02] p-4 text-left transition-colors duration-300 hover:border-cream/25 hover:bg-cream/[0.04]';
 
 export function Contact({ formData, formStatus, formError, onSubmit, onFormDataChange }: ContactProps) {
   const [emailCopied, setEmailCopied] = useState(false);
@@ -68,19 +68,14 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
   const isLoading = formStatus === 'loading';
 
   return (
-    <section
-      ref={ref}
-      id="contact"
-      className="relative px-6 py-28 md:py-36 section"
-      style={{ '--accent': '110 231 183' } as React.CSSProperties}
-    >
+    <section ref={ref} id="contact" className="relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           index="05"
           label="Contact"
           description="Interested in collaborating or have a project in mind? I'd love to hear from you."
         >
-          Let&apos;s <span className="text-gradient">work together</span>
+          Have a problem worth <em className="serif-accent">solving?</em>
         </SectionHeading>
 
         <div data-reveal-group className="grid gap-8 lg:grid-cols-12">
@@ -94,8 +89,8 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
             >
               <span className="icon-btn flex-shrink-0">{emailCopied ? <CheckIcon /> : <MailIcon />}</span>
               <span className="min-w-0">
-                <span className="block text-xs text-slate-500">Email</span>
-                <span className="block truncate text-sm text-white">{emailCopied ? '✓ Email Copied' : SITE.email}</span>
+                <span className="label block">Email</span>
+                <span className="mt-1 block truncate text-sm text-cream">{emailCopied ? '✓ Email Copied' : SITE.email}</span>
               </span>
             </button>
 
@@ -105,19 +100,19 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                   <Icon />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-xs text-slate-500">{label}</span>
-                  <span className="block truncate text-sm text-white">{handle}</span>
+                  <span className="label block">{label}</span>
+                  <span className="mt-1 block truncate text-sm text-cream">{handle}</span>
                 </span>
-                <ArrowUpRightIcon width={16} height={16} className="text-slate-500 transition-colors group-hover:text-white" />
+                <ArrowUpRightIcon width={16} height={16} className="text-cream/40 transition-colors group-hover:text-cream" />
               </a>
             ))}
           </div>
 
-          <div data-reveal className="glass rounded-2xl p-6 sm:p-8 lg:col-span-8">
+          <div data-reveal className="card p-6 sm:p-8 lg:col-span-8">
             <form onSubmit={onSubmit} className="space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="mb-2 block text-sm text-slate-300">
+                  <label htmlFor="name" className="label mb-2.5 block">
                     Name
                   </label>
                   <input
@@ -133,7 +128,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-sm text-slate-300">
+                  <label htmlFor="email" className="label mb-2.5 block">
                     Email
                   </label>
                   <input
@@ -151,7 +146,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
               </div>
 
               <div>
-                <label htmlFor="message" className="mb-2 block text-sm text-slate-300">
+                <label htmlFor="message" className="label mb-2.5 block">
                   Message
                 </label>
                 <textarea
@@ -170,13 +165,13 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
               <div className="flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-h-5 text-sm">
                   {formStatus === 'success' && (
-                    <div ref={statusRef} aria-live="polite" className="flex items-center gap-2 text-emerald-300">
+                    <div ref={statusRef} aria-live="polite" className="flex items-center gap-2 text-saffron-300">
                       <CheckIcon width={16} height={16} />
                       Thank you for reaching out! I&apos;ll get back to you soon.
                     </div>
                   )}
                   {formStatus === 'error' && (
-                    <div ref={statusRef} aria-live="polite" role="alert" className="text-rose-300">
+                    <div ref={statusRef} aria-live="polite" role="alert" className="text-red-300">
                       {formError || 'Failed to send message. Please try again.'}
                     </div>
                   )}
