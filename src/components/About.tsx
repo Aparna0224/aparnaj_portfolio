@@ -67,7 +67,7 @@ export function About({ skills }: AboutProps) {
   });
 
   return (
-    <section ref={ref} id="about" className="relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
+    <section ref={ref} id="about" className="relative px-5 py-28 sm:px-6 md:px-12 md:py-40 lg:pr-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading index="01" label="About">
           From research questions <br className="hidden md:block" />
@@ -106,9 +106,9 @@ export function About({ skills }: AboutProps) {
                 enterprise integrations and automation, from AI pricing engines to agentic RAG pipelines.
               </p>
 
-              <dl data-reveal className="grid grid-cols-3 border-y border-cream/10 py-6">
+              <dl data-reveal className="grid grid-cols-3 gap-4 border-y border-cream/10 py-6">
                 {STATS.map((stat) => (
-                  <div key={stat.label} className="pr-4">
+                  <div key={stat.label} className="min-w-0">
                     <dd
                       data-count={stat.value}
                       data-decimals={stat.decimals}
@@ -117,7 +117,7 @@ export function About({ skills }: AboutProps) {
                     >
                       {formatStat(stat.value, stat.decimals, stat.suffix)}
                     </dd>
-                    <dt className="label mt-3">{stat.label}</dt>
+                    <dt className="label mt-3 tracking-[0.12em] sm:tracking-[0.22em]">{stat.label}</dt>
                   </div>
                 ))}
               </dl>
