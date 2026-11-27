@@ -29,7 +29,7 @@ export function Hero() {
   });
 
   return (
-    <section ref={ref} id="home" className="relative flex h-[100svh] min-h-[640px] flex-col overflow-hidden px-6 md:px-12">
+    <section ref={ref} id="home" className="relative flex min-h-[100svh] flex-col overflow-hidden px-5 pt-28 sm:px-6 md:px-12">
       <span
         data-reveal
         data-hero="ghost"
@@ -41,27 +41,27 @@ export function Hero() {
 
       <div className="flex-1" />
 
-      <div className="relative grid gap-10 pb-16 md:grid-cols-12 md:items-end md:pb-20 lg:pr-24">
-        <div className="md:col-span-8">
+      <div className="relative grid gap-10 pb-16 md:pb-20 lg:grid-cols-12 lg:items-end lg:pr-24">
+        <div className="lg:col-span-8">
           <p data-reveal data-hero="eyebrow" className="label flex items-center gap-3">
             <span className="whitespace-nowrap text-saffron">[ 00 ]</span>
-            <span className="hidden sm:inline">{SITE.name} —</span>
+            <span className="hidden whitespace-nowrap sm:inline">{SITE.name} —</span>
             {SITE.role}
           </p>
           <h1
             data-reveal
             data-hero-title
-            className="mt-6 text-[clamp(2.75rem,7.2vw,6.75rem)] font-normal leading-[0.95] tracking-[-0.045em] text-cream"
+            className="mt-6 text-[clamp(2.5rem,7.2vw,6.75rem)] font-normal leading-[0.95] tracking-[-0.045em] text-cream"
           >
-            <span className="block md:whitespace-nowrap">Backend systems</span>
-            <span className="block md:whitespace-nowrap">
+            <span className="block sm:whitespace-nowrap">Backend systems</span>
+            <span className="block sm:whitespace-nowrap">
               that make <em className="serif-accent pr-2">AI useful.</em>
             </span>
           </h1>
         </div>
 
-        <div className="space-y-7 md:col-span-4">
-          <p data-reveal data-hero="side" className="max-w-sm text-[15px] leading-relaxed text-cream/60">
+        <div className="space-y-7 lg:col-span-4">
+          <p data-reveal data-hero="side" className="max-w-md text-[15px] leading-relaxed text-cream/60">
             Final-year AI &amp; Data Science student in {SITE.location.split(',')[0]}. I build REST APIs, FastAPI services
             and AI-powered systems, most recently as an AI Intern at Ford Motor Company.
           </p>
