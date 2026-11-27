@@ -1,3 +1,13 @@
+'use client';
+
+import Image from 'next/image';
+import { useRef } from 'react';
+import { animate, stagger } from 'animejs';
+import { drawIcons, revealGroups, revealHeadings, useAnime } from '@/lib/motion';
+import { EDUCATION, SITE, STATS } from '@/lib/site';
+import { SectionHeading } from './SectionHeading';
+import { CapIcon } from './icons';
+
 interface SkillGroup {
   category: string;
   items: string[];
@@ -7,71 +17,144 @@ interface AboutProps {
   skills: SkillGroup[];
 }
 
+const formatStat = (value: number, decimals = 0, suffix = '') => `${value.toFixed(decimals)}${suffix}`;
+
 export function About({ skills }: AboutProps) {
+  const ref = useRef<HTMLElement>(null);
+
+  useAnime(ref, (ctx) => {
+    revealGroups(ctx);
+    drawIcons(ctx);
+
+    ctx.root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+      const decimals = Number(el.dataset.decimals ?? 0);
+      const suffix = el.dataset.suffix ?? '';
+      const counter = { value: 0 };
+      el.textContent = formatStat(0, decimals, suffix);
+      const anim = animate(counter, {
+        value: Number(el.dataset.count),
+        duration: 1800,
+        ease: 'outExpo',
+        autoplay: false,
+        onUpdate: () => {
+          el.textContent = formatStat(counter.value, decimals, suffix);
+        },
+      });
+      ctx.inView(el, () => anim.play());
+    });
+
+    const chips = ctx.root.querySelector('[data-skills]');
+    if (chips) {
+      const anim = animate(chips.querySelectorAll('[data-chip]'), {
+        opacity: [0, 1],
+        y: [8, 0],
+        duration: 600,
+        delay: stagger(22, { start: 300 }),
+        ease: 'outQuad',
+        autoplay: false,
+      });
+      ctx.inView(chips, () => anim.play());
+    }
+
+    // Portrait settles from a slight zoom as it enters.
+    const portrait = ctx.root.querySelector('[data-portrait]');
+    if (portrait) {
+      const anim = animate(portrait, { scale: [1.12, 1], duration: 1800, ease: 'outExpo', autoplay: false });
+      ctx.inView(portrait, () => anim.play());
+    }
+
+    return revealHeadings(ctx);
+  });
+
   return (
-    <section id="about" className="min-h-screen flex items-center px-6 py-20 border-t border-green-900/30">
-      <div className="max-w-6xl mx-auto w-full">
-        <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-light mb-4">
-            <span className="text-green-500">About</span> Me
-          </h2>
-          <div className="w-24 h-px bg-green-500"></div>
-        </div>
-        
-        <div className="grid md:grid-cols-2 gap-16">
-          <div className="space-y-6">
-            <p className="text-gray-300 leading-relaxed text-lg">
-              My fascination with artificial intelligence began with a simple question: 
-              how can we make machines learn and adapt? This curiosity led me down a path 
-              of exploring neural networks, training models, and building intelligent systems.
-            </p>
-            
-            <p className="text-gray-300 leading-relaxed text-lg">
-              I specialize in developing machine learning solutions using Python, PyTorch, 
-              and TensorFlow. My work spans from computer vision projects to natural language 
-              processing applications. Beyond ML, I have strong backend development skills 
-              and enjoy creating full-stack applications with React.
-            </p>
+    <section ref={ref} id="about" className="relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
+      <div className="mx-auto w-full max-w-6xl">
+        <SectionHeading index="01" label="About">
+          From research questions <br className="hidden md:block" />
+          to <em className="serif-accent">production APIs.</em>
+        </SectionHeading>
 
-            <p className="text-gray-300 leading-relaxed text-lg">
-              When I'm not training models or debugging code, I'm probably exploring new 
-              research papers or experimenting with emerging AI technologies.
-            </p>
-
-            <div className="grid grid-cols-3 gap-4 pt-6">
-              <div className="border border-green-900/30 p-4">
-                <div className="text-3xl font-light text-green-500">5+</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Projects</div>
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
+          <div data-reveal-group className="lg:col-span-4">
+            <figure data-reveal className="lg:sticky lg:top-28">
+              <div className="overflow-hidden rounded-[28px] border border-cream/10">
+                <Image
+                  data-portrait
+                  src="/images/aparnaj.jpg"
+                  alt="Portrait of Aparna J"
+                  width={520}
+                  height={650}
+                  className="aspect-[4/5] w-full object-cover [filter:sepia(0.18)_saturate(0.9)_contrast(1.05)]"
+                />
               </div>
-              <div className="border border-green-900/30 p-4">
-                <div className="text-3xl font-light text-green-500">10+</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Technologies</div>
-              </div>
-              <div className="border border-green-900/30 p-4">
-                <div className="text-3xl font-light text-green-500">2+</div>
-                <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Years</div>
-              </div>
-            </div>
+              <figcaption className="label mt-4 flex justify-between">
+                <span>{SITE.name}</span>
+                <span>13.08° N, 80.27° E</span>
+              </figcaption>
+            </figure>
           </div>
 
-          <div className="space-y-6">
-            {skills.map((skillGroup, idx) => (
-              <div key={idx} className="border border-green-900/30 p-6 hover:border-green-600/50 transition-all">
-                <h3 className="text-green-500 font-medium mb-4 tracking-wide uppercase text-sm">
-                  {skillGroup.category}
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {skillGroup.items.map((skill, i) => (
-                    <span
-                      key={i}
-                      className="text-gray-400 text-sm border border-green-900/30 px-3 py-1 hover:text-green-500 hover:border-green-600/50 transition-all"
+          <div className="space-y-12 lg:col-span-8">
+            <div data-reveal-group className="space-y-5">
+              <p data-reveal className="text-lg leading-relaxed text-cream/80 md:text-xl">
+                I&apos;m a final-year B.Tech student in Artificial Intelligence and Data Science with strong backend and
+                Python experience. I build REST APIs, FastAPI applications, cloud-based solutions and AI-powered systems
+                that bring multiple services together.
+              </p>
+              <p data-reveal className="text-[15px] leading-relaxed text-cream/55 md:text-base">
+                I work with Docker, PostgreSQL, AWS and Azure, and I&apos;m most interested in scalable backend systems,
+                enterprise integrations and automation, from AI pricing engines to agentic RAG pipelines.
+              </p>
+
+              <dl data-reveal className="grid grid-cols-3 border-y border-cream/10 py-6">
+                {STATS.map((stat) => (
+                  <div key={stat.label} className="pr-4">
+                    <dd
+                      data-count={stat.value}
+                      data-decimals={stat.decimals}
+                      data-suffix={stat.suffix}
+                      className="text-[clamp(2.25rem,5vw,3.5rem)] font-light leading-none tracking-[-0.04em] text-cream tabular-nums"
                     >
-                      {skill}
-                    </span>
-                  ))}
+                      {formatStat(stat.value, stat.decimals, stat.suffix)}
+                    </dd>
+                    <dt className="label mt-3">{stat.label}</dt>
+                  </div>
+                ))}
+              </dl>
+
+              <div data-reveal className="flex gap-4 py-2">
+                <span data-draw className="icon-btn flex-shrink-0 text-saffron-300">
+                  <CapIcon />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-medium text-cream">{EDUCATION.school}</p>
+                  <p className="mt-0.5 text-sm text-cream/55">{EDUCATION.degree}</p>
+                  <p className="label mt-2">
+                    {EDUCATION.period} · {EDUCATION.grade}
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
+
+            <div data-reveal-group>
+              <p data-reveal className="label mb-5">
+                Toolkit
+              </p>
+              <div data-reveal data-skills className="card divide-y divide-cream/[0.07]">
+                {skills.map((group) => (
+                  <div key={group.category} className="grid gap-3 px-6 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                    <h3 className="pt-0.5 text-sm font-medium text-cream">{group.category}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {group.items.map((skill) => (
+                        <span key={skill} data-chip className="chip">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

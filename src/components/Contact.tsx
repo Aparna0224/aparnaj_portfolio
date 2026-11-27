@@ -1,4 +1,11 @@
-import { useState } from 'react';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { animate } from 'animejs';
+import { magnetic, motionEnabled, revealGroups, revealHeadings, useAnime } from '@/lib/motion';
+import { SITE } from '@/lib/site';
+import { SectionHeading } from './SectionHeading';
+import { ArrowUpRightIcon, CheckIcon, GitHubIcon, LinkedInIcon, MailIcon, SendIcon } from './icons';
 
 interface ContactProps {
   formData: {
@@ -12,140 +19,173 @@ interface ContactProps {
   onFormDataChange: (data: { name: string; email: string; message: string }) => void;
 }
 
-export function Contact({
-  formData,
-  formStatus,
-  formError,
-  onSubmit,
-  onFormDataChange
-}: ContactProps) {
+const SOCIALS = [
+  { href: SITE.linkedin, label: 'LinkedIn', handle: 'Aparna J', aria: 'Visit LinkedIn profile', Icon: LinkedInIcon },
+  { href: SITE.github, label: 'GitHub', handle: 'Aparna0224', aria: 'Visit GitHub profile', Icon: GitHubIcon },
+];
+
+const rowClass =
+  'group flex w-full items-center gap-4 rounded-2xl border border-cream/10 bg-cream/[0.02] p-4 text-left transition-colors duration-300 hover:border-cream/25 hover:bg-cream/[0.04]';
+
+export function Contact({ formData, formStatus, formError, onSubmit, onFormDataChange }: ContactProps) {
   const [emailCopied, setEmailCopied] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const sendIconRef = useRef<HTMLSpanElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
+
+  useAnime(ref, (ctx) => {
+    revealGroups(ctx);
+    const undoMagnetic = magnetic(ctx.root, 0.2);
+    const undoHeadings = revealHeadings(ctx);
+    return () => {
+      undoMagnetic();
+      undoHeadings();
+    };
+  });
+
+  // Paper plane drifts while sending.
+  useEffect(() => {
+    const icon = sendIconRef.current;
+    if (!icon || !motionEnabled() || formStatus !== 'loading') return;
+    const anim = animate(icon, { x: [0, 4, 0], y: [0, -4, 0], duration: 700, loop: true, ease: 'inOutSine' });
+    return () => {
+      anim.revert();
+    };
+  }, [formStatus]);
+
+  // Status message eases in.
+  useEffect(() => {
+    if (!statusRef.current || !motionEnabled()) return;
+    animate(statusRef.current, { opacity: [0, 1], y: [8, 0], duration: 600, ease: 'outExpo' });
+  }, [formStatus]);
 
   const handleEmailCopy = () => {
-    const email = 'aparna@example.com';
-    navigator.clipboard.writeText(email);
+    navigator.clipboard.writeText(SITE.email);
     setEmailCopied(true);
     setTimeout(() => setEmailCopied(false), 2000);
   };
+
+  const isLoading = formStatus === 'loading';
+
   return (
-    <section id="contact" className="min-h-screen flex items-center px-6 py-20 border-t border-green-900/30">
-      <div className="max-w-4xl mx-auto w-full">
-        <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-light mb-4">
-            Get In <span className="text-green-500">Touch</span>
-          </h2>
-          <div className="w-24 h-px bg-green-500 mb-6"></div>
-          <p className="text-gray-400 text-lg">
-            Interested in collaborating or have a project in mind? I'd love to hear from you.
-          </p>
-        </div>
+    <section ref={ref} id="contact" className="relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
+      <div className="mx-auto w-full max-w-6xl">
+        <SectionHeading
+          index="05"
+          label="Contact"
+          description="Interested in collaborating or have a project in mind? I'd love to hear from you."
+        >
+          Have a problem worth <em className="serif-accent">solving?</em>
+        </SectionHeading>
 
-        <div className="border border-green-900/30 p-8 md:p-12">
-          <form onSubmit={onSubmit} className="space-y-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <label htmlFor="name" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
-                  className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white placeholder-gray-600"
-                  placeholder="Your name"
-                  aria-label="Your name"
-                  disabled={formStatus === 'loading'}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
-                  className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white placeholder-gray-600"
-                  placeholder="your@email.com"
-                  aria-label="Your email"
-                  disabled={formStatus === 'loading'}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-sm text-gray-400 mb-3 uppercase tracking-wide">
-                Message
-              </label>
-              <textarea
-                id="message"
-                required
-                value={formData.message}
-                onChange={(e) => onFormDataChange({ ...formData, message: e.target.value })}
-                rows={6}
-                className="w-full px-0 py-3 bg-transparent border-b border-green-900/30 focus:outline-none focus:border-green-500 transition-all text-white resize-none placeholder-gray-600"
-                placeholder="Tell me about your project..."
-                aria-label="Your message"
-                disabled={formStatus === 'loading'}
-              />
-            </div>
-
+        <div data-reveal-group className="grid gap-8 lg:grid-cols-12">
+          <div data-reveal className="space-y-3 lg:col-span-4">
             <button
-              type="submit"
-              disabled={formStatus === 'loading'}
-              className="px-12 py-4 bg-green-600 text-black font-medium hover:bg-green-500 transition-all uppercase tracking-wide text-sm disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 transition-transform"
+              type="button"
+              onClick={handleEmailCopy}
+              title={emailCopied ? 'Email copied!' : 'Click to copy email'}
+              aria-label="Copy email address"
+              className={rowClass}
             >
-              {formStatus === 'loading' ? 'Sending...' : 'Send Message'}
+              <span className="icon-btn flex-shrink-0">{emailCopied ? <CheckIcon /> : <MailIcon />}</span>
+              <span className="min-w-0">
+                <span className="label block">Email</span>
+                <span className="mt-1 block truncate text-sm text-cream">{emailCopied ? '✓ Email Copied' : SITE.email}</span>
+              </span>
             </button>
 
-            {formStatus === 'success' && (
-              <div aria-live="polite" className="p-4 bg-green-900/20 border border-green-600/50 rounded text-green-400 text-sm">
-                ✓ Thank you for reaching out! I'll get back to you soon.
-              </div>
-            )}
+            {SOCIALS.map(({ href, label, handle, aria, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={aria} className={rowClass}>
+                <span className="icon-btn flex-shrink-0">
+                  <Icon />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="label block">{label}</span>
+                  <span className="mt-1 block truncate text-sm text-cream">{handle}</span>
+                </span>
+                <ArrowUpRightIcon width={16} height={16} className="text-cream/40 transition-colors group-hover:text-cream" />
+              </a>
+            ))}
+          </div>
 
-            {formStatus === 'error' && (
-              <div aria-live="polite" role="alert" className="p-4 bg-red-900/20 border border-red-600/50 rounded text-red-400 text-sm">
-                ✗ {formError || 'Failed to send message. Please try again.'}
+          <div data-reveal className="card p-6 sm:p-8 lg:col-span-8">
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className="label mb-2.5 block">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
+                    className="field"
+                    placeholder="Your name"
+                    aria-label="Your name"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="label mb-2.5 block">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
+                    className="field"
+                    placeholder="you@company.com"
+                    aria-label="Your email"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
-            )}
-          </form>
-        </div>
 
-        <div className="mt-12 flex justify-center gap-8">
-          <a
-            href="https://www.linkedin.com/in/aparna-j-a13647297/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit LinkedIn profile"
-            className="text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide transform hover:scale-110"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="https://github.com/Aparna0224"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit GitHub profile"
-            className="text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide transform hover:scale-110"
-          >
-            GitHub
-          </a>
-          <button
-            onClick={handleEmailCopy}
-            title={emailCopied ? 'Email copied!' : 'Click to copy email'}
-            className={`text-gray-400 hover:text-green-500 transition-colors text-sm uppercase tracking-wide cursor-pointer bg-none border-none p-0 font-inherit transform hover:scale-110 ${
-              emailCopied ? 'text-green-400' : ''
-            }`}
-            aria-label="Copy email address"
-          >
-            {emailCopied ? '✓ Email Copied' : 'Email'}
-          </button>
+              <div>
+                <label htmlFor="message" className="label mb-2.5 block">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  required
+                  value={formData.message}
+                  onChange={(e) => onFormDataChange({ ...formData, message: e.target.value })}
+                  rows={5}
+                  className="field resize-none"
+                  placeholder="Tell me about your project..."
+                  aria-label="Your message"
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="flex flex-col-reverse gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-h-5 text-sm">
+                  {formStatus === 'success' && (
+                    <div ref={statusRef} aria-live="polite" className="flex items-center gap-2 text-saffron-300">
+                      <CheckIcon width={16} height={16} />
+                      Thank you for reaching out! I&apos;ll get back to you soon.
+                    </div>
+                  )}
+                  {formStatus === 'error' && (
+                    <div ref={statusRef} aria-live="polite" role="alert" className="text-red-300">
+                      {formError || 'Failed to send message. Please try again.'}
+                    </div>
+                  )}
+                </div>
+
+                <button type="submit" disabled={isLoading} data-magnetic className="btn-primary">
+                  {isLoading ? 'Sending...' : 'Send Message'}
+                  <span ref={sendIconRef} className="inline-flex">
+                    <SendIcon width={16} height={16} />
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </section>
