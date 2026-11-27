@@ -68,7 +68,7 @@ export function Contact({ formData, formStatus, formError, onSubmit, onFormDataC
   const isLoading = formStatus === 'loading';
 
   return (
-    <section ref={ref} id="contact" className="relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
+    <section ref={ref} id="contact" className="relative px-5 py-28 sm:px-6 md:px-12 md:py-40 lg:pr-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           index="05"

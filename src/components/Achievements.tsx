@@ -21,7 +21,7 @@ export function Achievements() {
   });
 
   return (
-    <section ref={ref} id="achievements" className="section-band relative px-6 py-28 md:px-12 md:py-40 lg:pr-36">
+    <section ref={ref} id="achievements" className="section-band relative px-5 py-28 sm:px-6 md:px-12 md:py-40 lg:pr-36">
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading index="04" label="Recognition">
           Wins, training &amp; <em className="serif-accent">certifications.</em>

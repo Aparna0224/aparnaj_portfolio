@@ -30,7 +30,7 @@ export function SectionDivider() {
   });
 
   return (
-    <div ref={ref} aria-hidden="true" className="mx-auto flex max-w-6xl items-center gap-4 px-6 md:px-12 lg:pr-36">
+    <div ref={ref} aria-hidden="true" className="mx-auto flex max-w-6xl items-center gap-4 px-5 sm:px-6 md:px-12 lg:pr-36">
       <span data-divider-line className="h-px flex-1 origin-right bg-gradient-to-l from-cream/20 to-transparent" />
       <span data-divider-star className="text-xs text-saffron">
         ✦
